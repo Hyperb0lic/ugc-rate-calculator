@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UGC RATE CALCULATOR // 2025</title>
+    <style>
+        :root {
+            --yellow: #FFD028;
+            --pink: #FF6B6B;
+            --white: #FFFFFF;
+            --black: #000000;
+            --green: #00FF41;
+            --border: 3px solid var(--black);
+            --shadow: 6px 6px 0px var(--black);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 900;
+        }
+
+        body {
+            background-color: var(--pink);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--white);
+            border: var(--border);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        h1 {
+            background: var(--yellow);
+            border: var(--border);
+            padding: 10px;
+            text-align: center;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            transform: rotate(-1deg);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        input, select {
+            border: var(--border);
+            padding: 12px;
+            font-size: 1.1rem;
+            background: var(--white);
+            outline: none;
+            width: 100%;
+        }
+
+        .checkbox-group {
+            flex-direction: row;
+            align-items: center;
+            background: var(--yellow);
+            padding: 10px;
+            border: var(--border);
+        }
+
+        input[type="checkbox"] {
+            width: 25px;
+            height: 25px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        #calc-btn {
+            background: var(--black);
+            color: var(--white);
+            padding: 15px;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.1s;
+        }
+
+        #calc-btn:active {
+            transform: translate(3px, 3px);
+        }
+
+        /* RECEIPT STYLING */
+        .receipt {
+            background: #fff;
+            border: 2px dashed var(--black);
+            padding: 20px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .rate-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+        }
+
+        .rate-row.total {
+            border-top: 2px solid var(--black);
+            margin-top: 10px;
+            padding-top: 10px;
+            font-size: 1.3rem;
+        }
+
+        .guru-highlight {
+            background: var(--yellow);
+            padding: 2px 5px;
+        }
+
+        .copy-btn {
+            margin-top: 10px;
+            background: var(--pink);
+            border: var(--border);
+            padding: 10px;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px #000;
+            text-transform: uppercase;
+        }
+
+        /* COFFEE LINK STYLING */
+        .coffee-link {
+            display: block;
+            text-align: center;
+            background: var(--green);
+            color: var(--black);
+            text-decoration: none;
+            padding: 12px;
+            border: var(--border);
+            box-shadow: 4px 4px 0px #000;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            transition: 0.1s;
+        }
+
+        .coffee-link:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px #000;
+        }
+
+        .coffee-link:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #000;
+        }
+
+        @media (max-width: 400px) {
+            .container { padding: 15px; }
+            h1 { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>UGC RATE CALC // v2025</h1>
+    
+    <div class="input-group">
+        <label>Follower Count</label>
+        <input type="number" id="followers" placeholder="e.g. 10000" min="0">
+    </div>
+
+    <div class="input-group">
+        <label>Engagement Rate</label>
+        <select id="engagement">
+            <option value="1.0">Low (<1%)</option>
+            <option value="1.2" selected>Average (3%)</option>
+            <option value="1.5">High (5%+)</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <label>Deliverable</label>
+        <select id="deliverable">
+            <option value="1.0">1x TikTok Video</option>
+            <option value="1.1">1x Instagram Reel</option>
+            <option value="0.8">3x High-Res Photos</option>
+        </select>
+    </div>
+
+    <div class="input-group checkbox-group">
+        <input type="checkbox" id="adRights">
+        <label for="adRights">Include Ad Rights? (2x)</label>
+    </div>
+
+    <button id="calc-btn">Calculate Rates</button>
+
+    <div id="receipt" class="receipt">
+        <div style="text-align:center; border-bottom: 2px solid #000; margin-bottom: 10px;">
+            <p>ESTIMATED INVOICE</p>
+            <p id="receipt-date" style="font-size: 0.8rem;"></p>
+        </div>
+        
+        <div class="rate-row">
+            <span>Lowball:</span>
+            <span id="low-rate"></span>
+        </div>
+        <div class="rate-row">
+            <span>Standard:</span>
+            <span id="market-rate"></span>
+        </div>
+        <div class="rate-row total">
+            <span>GURU RATE:</span>
+            <span id="guru-rate" class="guru-highlight"></span>
+        </div>
+
+        <button class="copy-btn" id="copy-btn">Copy to Clipboard</button>
+    </div>
+
+    <a href="https://buymeacoffee.com/Hyperb0lic" target="_blank" rel="noopener noreferrer" class="coffee-link">
+        ☕ SUPPORT THE ARCHITECT
+    </a>
+</div>
+
+<script>
+    const calcBtn = document.getElementById('calc-btn');
+    const receipt = document.getElementById('receipt');
+
+    calcBtn.addEventListener('click', () => {
+        const followers = Math.max(0, parseInt(document.getElementById('followers').value) || 0);
+        const engMultiplier = parseFloat(document.getElementById('engagement').value);
+        const delWeight = parseFloat(document.getElementById('deliverable').value);
+        const hasAdRights = document.getElementById('adRights').checked;
+
+        // Formula Logic
+        let base = 150 + (followers / 1000 * 10);
+        base *= delWeight;
+        
+        let standard = base * engMultiplier;
+        if (hasAdRights) standard *= 2;
+
+        const low = standard * 0.75;
+        const guru = standard * 1.5;
+
+        // UI Update
+        document.getElementById('low-rate').innerText = `$${low.toFixed(2)}`;
+        document.getElementById('market-rate').innerText = `$${standard.toFixed(2)}`;
+        document.getElementById('guru-rate').innerText = `$${guru.toFixed(2)}`;
+        document.getElementById('receipt-date').innerText = new Date().toLocaleDateString();
+        
+        receipt.style.display = 'flex';
+    });
+
+    document.getElementById('copy-btn').addEventListener('click', async () => {
+        const text = `UGC QUOTE 2025\nLow: ${document.getElementById('low-rate').innerText}\nStandard: ${document.getElementById('market-rate').innerText}\nGuru: ${document.getElementById('guru-rate').innerText}`;
+        await navigator.clipboard.writeText(text);
+        alert("Rates Copied!");
+    });
+</script>
+
+</body>
+  </html>
